@@ -28,8 +28,8 @@ workflows:
         script: |
           flutter build apk --release
     artifacts:
-      - build/**/outputs/**/*.apk
-      - build/**/outputs/**/*.aab
+      - build/app/outputs/flutter-apk/*.apk
+      - build/app/outputs/bundle/release/*.aab
       - build/**/outputs/**/mapping.txt
       - flutter_drive.log
     publishing:

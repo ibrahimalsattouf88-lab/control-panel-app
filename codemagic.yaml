@@ -27,8 +27,12 @@ workflows:
       - name: Build APK with Flutter
         script: |
           flutter build apk --release
+      - name: Copy APK to CM_EXPORT_DIR
+        script: |
+          mkdir -p $CM_EXPORT_DIR
+          cp $(find build/app/outputs/flutter-apk -name "*.apk") $CM_EXPORT_DIR
     artifacts:
-      - build/app/outputs/flutter-apk/*.apk
+      - $CM_EXPORT_DIR/*.apk
       - build/app/outputs/bundle/release/*.aab
       - build/**/outputs/**/mapping.txt
       - flutter_drive.log

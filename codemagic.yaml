@@ -27,6 +27,9 @@ workflows:
       - name: Build APK with Flutter
         script: |
           flutter build apk --release
+      - name: Echo APK path
+        script: |
+          find build/app/outputs/flutter-apk -name "*.apk"
       - name: Copy APK to CM_EXPORT_DIR
         script: |
           mkdir -p $CM_EXPORT_DIR

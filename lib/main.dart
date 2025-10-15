@@ -1,205 +1,100 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'widgets/va_fab.dart';
 
-void main() {
-  runApp(const ControlPanelApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+  );
+  runApp(const MyApp());
 }
 
-class ControlPanelApp extends StatelessWidget {
-  const ControlPanelApp({super.key});
-
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'لوحة التحكم',
-      theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF5B7C99), // Norwegian calm color
-          foregroundColor: Colors.white,
-        ),
-        scaffoldBackgroundColor: const Color(0xFFF8F9FA), // Light background
-      ),
-      home: const ControlPanelHomePage(),
+      title: 'Manus VA',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+      ),
+      home: const HomeShell(),
     );
   }
 }
 
-class ControlPanelHomePage extends StatefulWidget {
-  const ControlPanelHomePage({super.key});
-
+class HomeShell extends StatefulWidget {
+  const HomeShell({super.key});
   @override
-  State<ControlPanelHomePage> createState() => _ControlPanelHomePageState();
+  State<HomeShell> createState() => _HomeShellState();
 }
 
-class _ControlPanelHomePageState extends State<ControlPanelHomePage> {
-  int _selectedIndex = 0;
-
-  static const List<Widget> _widgetOptions = <Widget>[
-    UserManagementScreen(),
-    SubscriptionManagementScreen(),
-    SystemMonitoringScreen(),
-    AnalyticsAndReportsScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+class _HomeShellState extends State<HomeShell> {
+  int _i = 0;
+  final _pages = const [PageAccounting(), PageAssistant(), PageFX(), PageTips()];
+  final _titles = const ['المحاسبة', 'مساعد شخصي', 'العملات', 'نصائح'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('لوحة التحكم'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () {
-              // Handle settings action
-            },
-          ),
+      appBar: AppBar(title: Text(_titles[_i])),
+      body: _pages[_i],
+      floatingActionButton: const VaFab(),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _i,
+        onDestinationSelected: (v) => setState(() => _i = v),
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.receipt_long), label: 'محاسبة'),
+          NavigationDestination(icon: Icon(Icons.assistant), label: 'مساعد'),
+          NavigationDestination(icon: Icon(Icons.currency_exchange), label: 'عملات'),
+          NavigationDestination(icon: Icon(Icons.lightbulb), label: 'نصائح'),
         ],
-      ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'المستخدمون',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.subscriptions),
-            label: 'الاشتراكات',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.monitor_heart),
-            label: 'المراقبة',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.analytics),
-            label: 'التقارير',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: const Color(0xFF5B7C99),
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
       ),
     );
   }
 }
 
-class UserManagementScreen extends StatelessWidget {
-  const UserManagementScreen({super.key});
+class PageAccounting extends StatelessWidget {
+  const PageAccounting({super.key});
+  @override
+  Widget build(BuildContext context) =>
+      const _CenterText('لوحة محاسبة: ملخص/مبيعات/مخزون');
+}
 
+class PageAssistant extends StatelessWidget {
+  const PageAssistant({super.key});
+  @override
+  Widget build(BuildContext context) =>
+      const _CenterText('المساعد الشخصي: مهام وتذكيرات');
+}
+
+class PageFX extends StatelessWidget {
+  const PageFX({super.key});
+  @override
+  Widget build(BuildContext context) =>
+      const _CenterText('العملات: أسعار فورية + تحليلات');
+}
+
+class PageTips extends StatelessWidget {
+  const PageTips({super.key});
+  @override
+  Widget build(BuildContext context) =>
+      const _CenterText('نصائح ذكية مخصّصة');
+}
+
+class _CenterText extends StatelessWidget {
+  final String text;
+  const _CenterText(this.text, {super.key});
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.people, size: 100, color: Colors.grey),
-          SizedBox(height: 20),
-          Text(
-            'إدارة المستخدمين والأدوات',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'هنا يمكنك إدارة المستخدمين، الأقسام، والأدوات المتاحة.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-        ],
-      ),
+    return Center(
+      child: Text(text, style: Theme.of(context).textTheme.headlineSmall),
     );
   }
 }
-
-class SubscriptionManagementScreen extends StatelessWidget {
-  const SubscriptionManagementScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.subscriptions, size: 100, color: Colors.grey),
-          SizedBox(height: 20),
-          Text(
-            'إدارة الاشتراكات المؤتمتة',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'إدارة الاشتراكات وتجديدها بشكل مؤتمت بالكامل.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SystemMonitoringScreen extends StatelessWidget {
-  const SystemMonitoringScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.monitor_heart, size: 100, color: Colors.grey),
-          SizedBox(height: 20),
-          Text(
-            'مراقبة حالة النظام والطوارئ',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'مراقبة الأداء العام للنظام واكتشاف الطوارئ.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class AnalyticsAndReportsScreen extends StatelessWidget {
-  const AnalyticsAndReportsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.analytics, size: 100, color: Colors.grey),
-          SizedBox(height: 20),
-          Text(
-            'تحليلات وتقارير لحظية ودورية',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'عرض التحليلات والتقارير في الوقت الفعلي وبشكل دوري.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
-}
-

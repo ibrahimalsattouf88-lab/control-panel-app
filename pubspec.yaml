@@ -1,20 +1,19 @@
-name: smart_assistant_app
-description: Smart Assistant (4 tabs + VA mic)
-publish_to: "none"
+name: control_panel_app
+description: Admin Control Panel (Flutter).
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: '>=3.22.0'
 
 dependencies:
   flutter:
     sdk: flutter
+
   http: ^1.2.2
-  web_socket_channel: ^2.4.5
-  supabase_flutter: ^2.5.7
-  speech_to_text: ^6.6.2
-  permission_handler: ^11.3.1
   flutter_dotenv: ^5.1.0
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +22,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - .env

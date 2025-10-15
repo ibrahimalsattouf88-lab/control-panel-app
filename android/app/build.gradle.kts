@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.smart_assistant_app"   // <- هنا
+    namespace = "com.ibrahim.control_panel_app"
     compileSdk = flutter.compileSdkVersion
 
     defaultConfig {
-        applicationId = "com.example.smart_assistant_app"
+        applicationId = "com.ibrahim.control_panel_app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = 1

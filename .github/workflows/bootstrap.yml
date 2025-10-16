@@ -1,0 +1,45 @@
+name: Bootstrap Control Panel (Next.js)
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clean repository
+        run: |
+          shopt -s dotglob
+          rm -rf -- * || true
+          mkdir -p .github/workflows pages
+
+      - name: Init project
+        run: |
+          npm init -y
+          npm i next@14.2.6 react@18.3.1 react-dom@18.3.1 @supabase/supabase-js@^2.45.4
+          cat > next.config.js <<'JS'
+          module.exports = { output: 'export' };
+          JS
+          cat > .env.example <<'ENV'
+          SUPABASE_URL=
+          SUPABASE_ANON_KEY=
+          ENV
+          cat > pages/index.jsx <<'JSX'
+          export default function Home(){
+            return (
+              <main style={{padding:24,fontFamily:'system-ui'}}>
+                <h1>لوحة التحكم — المعاون</h1>
+                <p>ربط Supabase وتحليلات جاهزة للتوسع.</p>
+              </main>
+            );
+          }
+          JSX
+
+      - name: Commit files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "bootstrap: Control Panel v3.1"

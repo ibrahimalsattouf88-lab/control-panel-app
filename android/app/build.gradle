@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    namespace "com.example.smartassistant"
+    namespace "com.example.controlpanel"
     compileSdk 34
     ndkVersion flutter.ndkVersion
 
     defaultConfig {
-        applicationId "com.example.smartassistant"
+        applicationId "com.example.controlpanel"
         minSdk 24
         targetSdk 34
         versionCode flutterVersionCode.toInteger()

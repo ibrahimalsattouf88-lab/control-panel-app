@@ -11,10 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Clean repository
+      - name: Clean repository but keep .git/.github
+        shell: bash
         run: |
-          shopt -s dotglob
-          rm -rf -- * || true
+          shopt -s extglob dotglob
+          rm -rf -- !(.git|.github)
           mkdir -p .github/workflows pages
 
       - name: Init project

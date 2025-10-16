@@ -13,11 +13,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    namespace "com.ibrahim.smart_assistant_app"
+    namespace "com.ibrahim.control_panel_app"
     compileSdkVersion 34
 
     defaultConfig {
-        applicationId "com.ibrahim.smart_assistant_app"
+        applicationId "com.ibrahim.control_panel_app"
         minSdkVersion 23
         targetSdkVersion 34
         versionCode 1

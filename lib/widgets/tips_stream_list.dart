@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿import 'package:flutter/material.dart';
+=======
+import 'package:flutter/material.dart';
+>>>>>>> edcbeb303529fa79acc61ff1edc09ea24074c4d2
 import '../services/realtime_tips.dart';
 
 class TipsStreamList extends StatefulWidget {

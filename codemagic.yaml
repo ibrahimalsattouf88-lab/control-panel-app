@@ -1,28 +1,31 @@
-
 workflows:
-  control_release:
-    name: Control Panel Release
+  android_release:
+    name: Android Release
     max_build_duration: 60
-    instance_type: linux_x2
     environment:
+      flutter: stable
       vars:
-        FLUTTER_CHANNEL: stable
-        FLUTTER_VERSION: 3.24.0
-      flutter: $FLUTTER_VERSION
-      android: true
+        SUPABASE_URL: ${CM_SUPABASE_URL}
+        SUPABASE_ANON_KEY: ${CM_SUPABASE_ANON_KEY}
+      groups:
+        - mobile_env
+    triggering:
+      events:
+        - api
+      cancel_previous_builds: true
     scripts:
-      - name: Setup
-        script: flutter --version
-      - name: Prepare env
+      - name: Flutter pub get
+        script: flutter pub get
+      - name: Android build (release)
         script: |
-          echo "SUPABASE_URL=$CM_SUPABASE_URL" > .env
-          echo "SUPABASE_ANON_KEY=$CM_SUPABASE_ANON_KEY" >> .env
-      - name: Deps
-        script: |
-          flutter clean || true
-          flutter pub get || (flutter pub cache repair && flutter pub get)
-      - name: Build APK
-        script: |
-          flutter build apk --release || EXIT=$?;           if [ "$EXIT" != "0" ]; then             echo "[AutoFix] Layer1";             rm -f pubspec.lock; flutter clean; flutter pub get;             flutter build apk --release || EXIT=$?;           fi;           if [ "$EXIT" != "0" ]; then             echo "[AutoFix] Layer2";             sed -i 's/compileSdk [0-9]\+/compileSdk 34/g' android/app/build.gradle || true;             ./scripts/autofix_gradle.sh || true;             flutter build apk --release;           fi
+          export GRADLE_OPTS="-Xmx2048m -Dorg.gradle.daemon=false"
+          flutter build apk --release
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
+    publishing:
+      email:
+        recipients:
+          - ${CM_NOTIFY_EMAIL:-}
+        notify:
+          success: true
+          failure: true

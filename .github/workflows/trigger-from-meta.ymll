@@ -15,6 +15,6 @@ jobs:
             -H "x-auth-token: ${{ secrets.CODEMAGIC_API_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d '{
-                  "appId": "${{ secrets.CODEMAGIC_APP_ID }}",
-                  "workflowId": "default"
-                }'
+              "appId": "'"${{ secrets.CODEMAGIC_CONTROL_PANEL_ID }}"'",
+              "workflowId": "default"
+            }'
